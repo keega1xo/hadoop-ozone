@@ -18,6 +18,7 @@ jobs:
           env:
             TEST_TYPE: unit
         - uses: actions/upload-artifact@master
+          if: always()
           with:
              name: results
              path: target/unit
@@ -30,6 +31,11 @@ jobs:
         - uses: ./.github/actions/build
           env:
             TEST_TYPE: integration
+        - uses: actions/upload-artifact@master
+          if: always()
+          with:
+             name: results
+             path: target/integration
   rat:
     name: Licence check
     runs-on: ubuntu-18.04
@@ -38,6 +44,12 @@ jobs:
         - uses: ./.github/actions/build
           env:
             TEST_TYPE: rat
+        - uses: actions/upload-artifact@master
+          if: always()
+          with:
+             name: results
+             path: target/rat
+
   author:
     name: Author tag usage check
     runs-on: ubuntu-18.04
@@ -46,6 +58,12 @@ jobs:
         - uses: ./.github/actions/build
           env:
             TEST_TYPE: author
+        - uses: actions/upload-artifact@master
+          if: always()
+          with:
+             name: results
+             path: target/author
+
   checkstyle:
     name: Checkstyle
     runs-on: ubuntu-18.04
@@ -55,6 +73,7 @@ jobs:
           env:
             TEST_TYPE: checkstyle
         - uses: actions/upload-artifact@master
+          if: always()
           with:
              name: result
              path: target/checkstyle
@@ -66,6 +85,11 @@ jobs:
         - uses: ./.github/actions/build
           env:
             TEST_TYPE: findbugs
+        - uses: actions/upload-artifact@master
+          if: always()
+          with:
+             name: results
+             path: target/findbugs
   acceptance:
     name: Acceptance
     runs-on: ubuntu-18.04
@@ -74,4 +98,9 @@ jobs:
         - uses: ./.github/actions/build
           env:
             TEST_TYPE: acceptance
+        - uses: actions/upload-artifact@master
+          if: always()
+          with:
+             name: results
+             path: target/acceptance
 
