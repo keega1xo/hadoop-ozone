@@ -17,6 +17,11 @@ jobs:
         - uses: ./.github/actions/build
           env:
             TEST_TYPE: unit
+        - uses: actions/upload-artifact@master
+          with:
+             name: results
+             path: target/unit
+
   integration:
     name: Integration tests
     runs-on: ubuntu-18.04
@@ -49,6 +54,10 @@ jobs:
         - uses: ./.github/actions/build
           env:
             TEST_TYPE: checkstyle
+        - uses: actions/upload-artifact@master
+          with:
+             name: result
+             path: target/checkstyle
   findbugs:
     name: Findbugs
     runs-on: ubuntu-18.04
