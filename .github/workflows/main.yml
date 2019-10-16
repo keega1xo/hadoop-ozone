@@ -17,6 +17,14 @@ jobs:
         - uses: ./.github/actions/build
           env:
             TEST_TYPE: unit
+  integration:
+    name: Integration tests
+    runs-on: ubuntu-18.04
+    steps:
+        - uses: actions/checkout@master
+        - uses: ./.github/actions/build
+          env:
+            TEST_TYPE: integration
   rat:
     name: Licence check
     runs-on: ubuntu-18.04
@@ -41,4 +49,20 @@ jobs:
         - uses: ./.github/actions/build
           env:
             TEST_TYPE: checkstyle
+  findbugs:
+    name: Findbugs
+    runs-on: ubuntu-18.04
+    steps:
+        - uses: actions/checkout@master
+        - uses: ./.github/actions/build
+          env:
+            TEST_TYPE: findbugs
+  acceptance:
+    name: Acceptance
+    runs-on: ubuntu-18.04
+    steps:
+        - uses: actions/checkout@master
+        - uses: ./.github/actions/build
+          env:
+            TEST_TYPE: acceptance
 
