@@ -1,4 +1,4 @@
-FROM elek/ozone-build:20190825-1
+FROM elek/ozone-build:20191009-1-centos
 
 ADD entrypoint.sh /entrypoint.sh
 RUN sudo chmod +x /entrypoint.sh
