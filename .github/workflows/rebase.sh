@@ -13,4 +13,4 @@ git config --global user.name "GitHub Action"
 git rebase apache/$TARGET_BRANCH
 
 git remote set-url origin  https://x-access-token:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
-git push dest $CURRENT_BRANCH:$TARGET_BRANCH --force-with-lease
+git push origin $CURRENT_BRANCH:$TARGET_BRANCH --force-with-lease
