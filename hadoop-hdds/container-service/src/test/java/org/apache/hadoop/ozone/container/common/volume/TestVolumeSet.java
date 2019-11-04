@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,8 +19,10 @@
 package org.apache.hadoop.ozone.container.common.volume;
 
 import java.io.IOException;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.LogFactory;
+
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.hdds.conf.OzoneConfiguration;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
@@ -38,6 +40,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -220,11 +223,12 @@ public class TestVolumeSet {
   }
 
   @Test
-  public void testFailVolumes() throws  Exception{
+  public void testFailVolumes() throws Exception {
     VolumeSet volSet = null;
     File readOnlyVolumePath = new File(baseDir);
     //Set to readonly, so that this volume will be failed
-    readOnlyVolumePath.setReadOnly();
+    Assume.assumeTrue("Setting read only flag on volume path is not supprted",
+        readOnlyVolumePath.setReadOnly());
     File volumePath = GenericTestUtils.getRandomizedTestDir();
     OzoneConfiguration ozoneConfig = new OzoneConfiguration();
     ozoneConfig.set(HDDS_DATANODE_DIR_KEY, readOnlyVolumePath.getAbsolutePath()

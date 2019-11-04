@@ -72,7 +72,7 @@ public class StateContext {
   private final List<GeneratedMessage> reports;
   private final Queue<ContainerAction> containerActions;
   private final Queue<PipelineAction> pipelineActions;
-  private DatanodeStateMachine.DatanodeStates state;
+  private volatile DatanodeStateMachine.DatanodeStates state;
   private boolean shutdownOnError = false;
 
   /**
