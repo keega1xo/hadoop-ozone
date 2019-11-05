@@ -18,6 +18,7 @@ package org.apache.hadoop.ozone.container.common;
 
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.hdds.HddsConfigKeys;
@@ -40,8 +41,10 @@ import org.apache.hadoop.ozone.container.common.states.datanode
     .RunningDatanodeState;
 import org.apache.hadoop.test.GenericTestUtils;
 import org.apache.hadoop.util.concurrent.HadoopExecutors;
+
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -222,7 +225,7 @@ public class TestDatanodeStateMachine {
     ContainerUtils.writeDatanodeDetailsTo(datanodeDetails, idPath);
 
     try (DatanodeStateMachine stateMachine =
-             new DatanodeStateMachine(datanodeDetails, conf, null, null)) {
+        new DatanodeStateMachine(datanodeDetails, conf, null, null)) {
       DatanodeStateMachine.DatanodeStates currentState =
           stateMachine.getContext().getState();
       Assert.assertEquals(DatanodeStateMachine.DatanodeStates.INIT,
@@ -323,7 +326,6 @@ public class TestDatanodeStateMachine {
       Assert.assertEquals(DatanodeStateMachine.DatanodeStates.RUNNING,
           newState);
 
-
       for (ScmTestMock mock : mockServers) {
         Assert.assertEquals(1, mock.getHeartbeatCount());
       }
@@ -344,7 +346,7 @@ public class TestDatanodeStateMachine {
     datanodeDetails.setPort(port);
 
     try (DatanodeStateMachine stateMachine =
-             new DatanodeStateMachine(datanodeDetails, conf, null, null)) {
+        new DatanodeStateMachine(datanodeDetails, conf, null, null)) {
       DatanodeStateMachine.DatanodeStates currentState =
           stateMachine.getContext().getState();
       Assert.assertEquals(DatanodeStateMachine.DatanodeStates.INIT,
@@ -357,7 +359,8 @@ public class TestDatanodeStateMachine {
       //Set the idPath to read only, state machine will fail to write
       // datanodeId file and set the state to shutdown.
       idPath.getParentFile().mkdirs();
-      idPath.getParentFile().setReadOnly();
+      Assume.assumeTrue("Parent directory can't be set to read only",
+          idPath.getParentFile().setReadOnly());
 
       task.execute(executorService);
       DatanodeStateMachine.DatanodeStates newState =
@@ -417,7 +420,11 @@ public class TestDatanodeStateMachine {
         task.execute(executorService);
         DatanodeStateMachine.DatanodeStates newState =
             task.await(2, TimeUnit.SECONDS);
-        Assert.assertEquals(DatanodeStateMachine.DatanodeStates.SHUTDOWN,
+        Assert.assertEquals(
+            "DatanodeStateMachine is not in SHUTDOWN state after using "
+                + "configuration "
+                + entry.getKey() + "=" + entry.getValue() + " for INIT",
+            DatanodeStateMachine.DatanodeStates.SHUTDOWN,
             newState);
       } catch (Exception e) {
         Assert.fail("Unexpected exception found");
