@@ -6,7 +6,6 @@ if [ "$WITH_DOCKERD" ]; then
 
 fi
 ls -lah
+whoami
 #fix permission which is not defined by github actions
-WHOAMI=$(id -u)
-sudo chown "$WHOAMI" -R  .
 "$@"
