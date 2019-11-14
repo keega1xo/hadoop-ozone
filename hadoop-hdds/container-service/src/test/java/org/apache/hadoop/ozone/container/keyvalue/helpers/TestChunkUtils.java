@@ -18,9 +18,15 @@
 package org.apache.hadoop.ozone.container.keyvalue.helpers;
 
 import org.apache.commons.io.FileUtils;
+
+import org.apache.hadoop.hdds.scm.container.common.helpers.StorageContainerException;
 import org.apache.hadoop.ozone.container.common.helpers.ChunkInfo;
 import org.apache.hadoop.ozone.container.common.volume.VolumeIOStats;
 import org.apache.hadoop.test.GenericTestUtils;
+
+import static org.apache.hadoop.hdds.protocol.datanode.proto.ContainerProtos.Result.UNABLE_TO_FIND_CHUNK;
+import org.junit.Assert;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -158,6 +164,19 @@ public class TestChunkUtils {
       LOG.error("Failed to read data", e);
     } finally {
       Files.deleteIfExists(tempFile);
+    }
+  }
+
+  @Test
+  public void readMissingFile() throws Exception {
+    try {
+      ChunkInfo chunkInfo =
+          new ChunkInfo("chunk_name", 0, 123);
+      ChunkUtils
+          .readData(new File("nosuchfile"), chunkInfo, new VolumeIOStats());
+      fail("Exception is Expected");
+    } catch (StorageContainerException ex) {
+      Assert.assertEquals(UNABLE_TO_FIND_CHUNK, ex.getResult());
     }
   }
 
